@@ -3,62 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruang Rasa | Jurnal Pribadi</title>
+  <title>Cerita Senja | Ruang Tenang</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --border: #334155;
+      /* Palette: Mendung di Senja Hari (Kalem & Cozy) */
+      --bg-overcast: #1e293b; /* Slate biru keabuan tua (langit mendung) */
+      --bg-card: #334155;     /* Slate keabuan yang lebih muda sedikit */
+      --text-main: #f1f5f9;  /* Putih tulang kalem */
+      --text-muted: #94a3b8; /* Abu-abu redup */
+      --accent-warm: #fcd5b5; /* Warm Beige redup (sisa cahaya senja) */
+      --accent-dusty: #e2a89c;/* Dusty Rose kalem */
+      --border: #475569;      /* Border tipis redup */
+      --shadow-cozy: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      --font-body: 'Georgia', serif; /* Font berkaki biar kerasa 'buku jurnal' */
+      --font-heading: 'Helvetica Neue', sans-serif;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding: 24px 16px;
+      background-color: var(--bg-overcast);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.8;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
+      /* Efek tekstur mendung tipis di background */
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(51, 65, 85, 0.3) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(15, 23, 42, 0.2) 0px, transparent 50%);
+      padding: 40px 20px;
     }
 
     .container {
       width: 100%;
-      max-width: 680px;
+      max-width: 720px;
     }
 
     header {
-      margin-bottom: 2rem;
       text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
     }
 
     header h1 {
-      font-size: 1.8rem;
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
       font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 6px;
+      color: var(--accent-warm);
+      letter-spacing: -1px;
+      margin-bottom: 8px;
     }
 
     header p {
-      color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-style: italic;
     }
 
-    /* Form Input */
+    /* Tombol Tulis Cerita (floating) */
+    .btn-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: var(--accent-dusty);
+      color: #1e293b;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(226, 168, 156, 0.4);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .btn-float:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px rgba(226, 168, 156, 0.5);
+    }
+
+    /* Modal (Jendela Tulis Cerita) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 42, 0.85); /* Overlay gelap */
+      backdrop-filter: blur(5px); /* Efek blur kaca */
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
     .form-box {
-      background-color: var(--card-bg);
+      background-color: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 2rem;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow-cozy);
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .form-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      color: var(--accent-warm);
+    }
+
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
     }
 
     .form-group {
@@ -67,33 +145,36 @@
 
     input, textarea, select {
       width: 100%;
-      background: #0b1120;
+      background: #19212c; /* Input area super gelap */
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 10px 12px;
-      color: var(--text);
-      font-size: 0.95rem;
+      padding: 12px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 1rem;
       outline: none;
     }
 
     input:focus, textarea:focus, select:focus {
-      border-color: var(--accent);
+      border-color: var(--accent-dusty);
     }
 
     textarea {
       resize: vertical;
-      min-height: 110px;
+      min-height: 150px;
     }
 
     .btn-submit {
       width: 100%;
-      background-color: var(--accent);
-      color: #0f172a;
+      background-color: var(--accent-warm);
+      color: #1e293b;
+      font-family: var(--font-heading);
       font-weight: 600;
       border: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
       transition: opacity 0.2s;
     }
 
@@ -101,99 +182,140 @@
       opacity: 0.9;
     }
 
-    /* List Cerita */
+    /* List Cerita (Timeline) */
     .timeline {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 20px;
     }
 
     .entry-card {
-      background-color: var(--card-bg);
+      background-color: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 18px;
-      position: relative;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-cozy);
+      transition: transform 0.2s ease;
     }
 
     .entry-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
     }
 
     .mood-tag {
+      font-family: var(--font-heading);
       font-size: 0.8rem;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      padding: 3px 10px;
+      background: rgba(226, 168, 156, 0.15); /* Dusty rose transparan */
+      color: var(--accent-dusty);
+      padding: 4px 12px;
       border-radius: 999px;
       font-weight: 500;
     }
 
     .entry-date {
       font-size: 0.8rem;
-      color: var(--muted);
+      color: var(--text-muted);
+      font-family: var(--font-heading);
     }
 
     .entry-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
     }
 
     .entry-body {
-      color: #cbd5e1;
+      color: #d1d5db; /* Teks konten sedikit lebih terang */
       white-space: pre-wrap;
-      font-size: 0.95rem;
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
     }
 
     .btn-del {
       background: none;
       border: none;
-      color: #ef4444;
+      color: var(--accent-dusty); /* Warna Dusty kusam untuk tombol hapus */
+      font-family: var(--font-heading);
       font-size: 0.8rem;
       cursor: pointer;
-      margin-top: 10px;
-      display: inline-block;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .btn-del:hover {
+      opacity: 1;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 20px 10px; }
+      header h1 { font-size: 1.8rem; }
+      .entry-title { font-size: 1.2rem; }
+      .btn-float { bottom: 20px; right: 20px; padding: 12px 20px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>Ruang Rasa</h1>
-      <p>Tempat gue menaruh segala isi kepala dan apa yang lagi dirasain.</p>
-    </header>
-
-    <!-- Form Buat Nulis -->
+  <!-- Jendela Modal (Input Form) -->
+  <div class="modal" id="entryModal">
     <div class="form-box">
+      <div class="form-header">
+        <h2>Tuangkan Pikiran</h2>
+        <button class="btn-close-modal" onclick="closeModal()">×</button>
+      </div>
       <div class="form-group">
         <select id="mood">
-          <option value="🌿 Reflektif">🌿 Reflektif</option>
+          <option value="🌧️ Mendung/Reflektif">🌧️ Mendung/Reflektif</option>
           <option value="🌪️ Overthinking">🌪️ Overthinking</option>
-          <option value="☕ Santai">☕ Santai</option>
+          <option value="☕ Santai/Cozy">☕ Santai/Cozy</option>
           <option value="⚡ Bersemangat">⚡ Bersemangat</option>
-          <option value="🌧️ Lelah / Sedih">🌧️ Lelah / Sedih</option>
+          <option value="🥀 Lelah/Sedih">🥀 Lelah/Sedih</option>
         </select>
       </div>
       <div class="form-group">
-        <input type="text" id="title" placeholder="Judul tulisan atau rangkuman harimu..." required />
+        <input type="text" id="title" placeholder="Judul ceritamu..." required />
       </div>
       <div class="form-group">
-        <textarea id="content" placeholder="Ceritain apa aja di sini tanpa perlu khawatir dihakimi..." required></textarea>
+        <textarea id="content" placeholder="Ceritain apa aja, biarkan mengalir..." required></textarea>
       </div>
-      <button class="btn-submit" onclick="saveEntry()">Simpan Cerita</button>
+      <button class="btn-submit" onclick="saveEntry()">Simpan di Ruang Tenang</button>
     </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>Cerita Senja</h1>
+      <p>Ruang tenang untuk menaruh segala isi kepala di pengujung hari.</p>
+    </header>
+
+    <!-- Tombol untuk buka Modal -->
+    <button class="btn-float" onclick="openModal()">+ Tulis</button>
 
     <!-- Feed Cerita -->
     <div class="timeline" id="timeline"></div>
   </div>
 
   <script>
-    // Ambil data dari LocalStorage
+    // FUNGSI MODAL
+    function openModal() {
+      document.getElementById('entryModal').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Matikan scroll body
+    }
+
+    function closeModal() {
+      document.getElementById('entryModal').classList.remove('active');
+      document.body.style.overflow = 'auto'; // Aktifkan scroll body
+    }
+
+    // FUNGSI INTI JURNAL (LocalStorage)
     function getEntries() {
       return JSON.parse(localStorage.getItem('my_journal_entries')) || [];
     }
@@ -203,7 +325,11 @@
       const entries = getEntries();
 
       if (entries.length === 0) {
-        timeline.innerHTML = `<p style="text-align:center; color: var(--muted);">Belum ada cerita yang ditulis. Mulai tuangkan perasaanmu di atas.</p>`;
+        timeline.innerHTML = `
+          <div style="text-align:center; padding: 40px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 16px; background: rgba(51, 65, 85, 0.2);">
+            <p>Belum ada cerita yang tertuang.</p>
+            <p style="font-size: 0.9rem;">Klik tombol <strong>+ Tulis</strong> untuk mulai bercerita.</p>
+          </div>`;
         return;
       }
 
@@ -215,7 +341,9 @@
           </div>
           <h2 class="entry-title">${item.title}</h2>
           <p class="entry-body">${item.content}</p>
-          <button class="btn-del" onclick="deleteEntry(${index})">Hapus</button>
+          <div style="text-align: right;">
+            <button class="btn-del" onclick="deleteEntry(${index})">Hapus Cerita</button>
+          </div>
         </article>
       `).join('');
     }
@@ -233,7 +361,7 @@
       const now = new Date();
       const formattedDate = now.toLocaleDateString('id-ID', {
         day: 'numeric',
-        month: 'short',
+        month: 'long',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
@@ -241,7 +369,7 @@
 
       const newEntry = { mood, title, content, date: formattedDate };
       const entries = getEntries();
-      entries.unshift(newEntry); // Taruh yang terbaru di paling atas
+      entries.unshift(newEntry);
 
       localStorage.setItem('my_journal_entries', JSON.stringify(entries));
 
@@ -249,6 +377,7 @@
       document.getElementById('title').value = '';
       document.getElementById('content').value = '';
 
+      closeModal();
       renderEntries();
     }
 
