@@ -63,7 +63,6 @@
       z-index: 10;
       transition: transform 0.2s ease;
     }
-
     .btn-float:hover { transform: translateY(-2px); }
 
     /* Modal Form */
@@ -126,21 +125,21 @@
     .btn-submit:hover { opacity: 0.9; }
 
     /* Cards */
-    .timeline { display: flex; flex-direction: column; gap: 28px; }
+    .timeline { display: flex; flex-direction: column; gap: 24px; }
     .entry-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 28px 26px;
+      padding: 26px 24px;
       box-shadow: var(--shadow-cozy);
     }
     .entry-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
       border-bottom: 1px solid rgba(71, 85, 105, 0.6);
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
     .mood-tag {
       font-family: var(--font-heading);
@@ -154,12 +153,42 @@
     .entry-date { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-heading); }
     .entry-title {
       font-family: var(--font-heading);
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--text-main);
-      margin-bottom: 1.2rem;
+      margin-bottom: 0.8rem;
     }
-    .entry-body { color: #cbd5e1; white-space: pre-wrap; font-size: 1.05rem; }
+
+    /* Style Potongan Teks & Read More */
+    .entry-body {
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      font-size: 1.05rem;
+      position: relative;
+    }
+
+    .entry-body.truncated {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .btn-read-more {
+      background: none;
+      border: none;
+      color: var(--accent-warm);
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      padding: 0;
+      display: inline-block;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    .btn-read-more:hover { color: var(--accent-dusty); }
 
     footer {
       text-align: center;
@@ -170,7 +199,7 @@
     }
   </style>
 
-  <!-- Firebase CDN Modules -->
+  <!-- Firebase Setup -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } 
@@ -189,7 +218,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // PIN rahasia untuk membuka pop-up tulis cerita
     const SECRET_PIN = "1234";
 
     window.openModal = function() {
@@ -216,7 +244,7 @@
       }
 
       const btn = document.querySelector('.btn-submit');
-      btn.innerText = "Menyimpan ke Cloud...";
+      btn.innerText = "Menyimpan...";
       btn.disabled = true;
 
       try {
@@ -242,6 +270,18 @@
       }
     };
 
+    window.toggleReadMore = function(id) {
+      const body = document.getElementById(`body-${id}`);
+      const btn = document.getElementById(`btn-${id}`);
+      if (body.classList.contains('truncated')) {
+        body.classList.remove('truncated');
+        btn.innerText = "Tutup tulisan ↑";
+      } else {
+        body.classList.add('truncated');
+        btn.innerText = "Baca selengkapnya...";
+      }
+    };
+
     async function loadStories() {
       const timeline = document.getElementById('timeline');
       timeline.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 40px;">Memuat tulisan dari senja...</p>`;
@@ -260,8 +300,11 @@
         }
 
         let html = '';
+        let index = 0;
         querySnapshot.forEach((doc) => {
           const item = doc.data();
+          const isLong = (item.content || '').length > 180 || (item.content || '').includes('\n\n');
+          
           html += `
             <article class="entry-card">
               <div class="entry-header">
@@ -269,13 +312,15 @@
                 <span class="entry-date">${item.dateString || ''}</span>
               </div>
               <h2 class="entry-title">${item.title}</h2>
-              <p class="entry-body">${item.content}</p>
+              <p class="entry-body ${isLong ? 'truncated' : ''}" id="body-${index}">${item.content}</p>
+              ${isLong ? `<button class="btn-read-more" id="btn-${index}" onclick="toggleReadMore(${index})">Baca selengkapnya...</button>` : ''}
             </article>
           `;
+          index++;
         });
         timeline.innerHTML = html;
       } catch (err) {
-        timeline.innerHTML = `<p style="text-align:center; color: var(--text-muted);">Gagal memuat tulisan. Pastikan rules Firestore sudah disetel.</p>`;
+        timeline.innerHTML = `<p style="text-align:center; color: var(--text-muted);">Gagal memuat tulisan.</p>`;
       }
     }
 
