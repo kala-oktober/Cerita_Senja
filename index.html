@@ -4,200 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cerita Senja | Ruang Tenang</title>
-  <style>
-    :root {
-      --bg-overcast: #1e293b;
-      --bg-card: #334155;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --accent-warm: #fcd5b5;
-      --accent-dusty: #e2a89c;
-      --border: #475569;
-      --shadow-cozy: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-      --font-body: 'Georgia', serif;
-      --font-heading: 'Helvetica Neue', sans-serif;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background-color: var(--bg-overcast);
-      color: var(--text-main);
-      font-family: var(--font-body);
-      line-height: 1.85;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-      background-image: 
-        radial-gradient(at 10% 10%, rgba(51, 65, 85, 0.35) 0px, transparent 50%),
-        radial-gradient(at 90% 90%, rgba(15, 23, 42, 0.25) 0px, transparent 50%);
-      padding: 40px 20px 80px;
-    }
-
-    .container { width: 100%; max-width: 680px; }
-
-    header { text-align: center; margin-bottom: 3.5rem; }
-    header h1 {
-      font-family: var(--font-heading);
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--accent-warm);
-      margin-bottom: 6px;
-    }
-    header p { font-size: 1rem; color: var(--text-muted); font-style: italic; }
-
-    /* Tombol Tulis */
-    .btn-float {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: var(--accent-dusty);
-      color: #1e293b;
-      font-family: var(--font-heading);
-      font-weight: 600;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(226, 168, 156, 0.4);
-      z-index: 10;
-      transition: transform 0.2s ease;
-    }
-    .btn-float:hover { transform: translateY(-2px); }
-
-    /* Modal Form */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(5px);
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-    .modal.active { display: flex; }
-
-    .form-box {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: var(--shadow-cozy);
-    }
-    .form-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .form-header h2 { font-family: var(--font-heading); font-size: 1.3rem; color: var(--accent-warm); }
-    .btn-close { background: none; border: none; color: var(--text-muted); font-size: 1.4rem; cursor: pointer; }
-
-    .form-group { margin-bottom: 12px; }
-    input, textarea, select {
-      width: 100%;
-      background: #19212c;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      color: var(--text-main);
-      font-family: var(--font-body);
-      font-size: 1rem;
-      outline: none;
-    }
-    textarea { resize: vertical; min-height: 150px; }
-
-    .btn-submit {
-      width: 100%;
-      background-color: var(--accent-warm);
-      color: #1e293b;
-      font-family: var(--font-heading);
-      font-weight: 600;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .btn-submit:hover { opacity: 0.9; }
-
-    /* Cards */
-    .timeline { display: flex; flex-direction: column; gap: 24px; }
-    .entry-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 26px 24px;
-      box-shadow: var(--shadow-cozy);
-    }
-    .entry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid rgba(71, 85, 105, 0.6);
-      padding-bottom: 8px;
-    }
-    .mood-tag {
-      font-family: var(--font-heading);
-      font-size: 0.8rem;
-      background: rgba(226, 168, 156, 0.15);
-      color: var(--accent-dusty);
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-weight: 500;
-    }
-    .entry-date { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-heading); }
-    .entry-title {
-      font-family: var(--font-heading);
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.8rem;
-    }
-
-    /* Style Potongan Teks & Read More */
-    .entry-body {
-      color: #cbd5e1;
-      white-space: pre-wrap;
-      font-size: 1.05rem;
-      position: relative;
-    }
-
-    .entry-body.truncated {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .btn-read-more {
-      background: none;
-      border: none;
-      color: var(--accent-warm);
-      font-family: var(--font-heading);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-      padding: 0;
-      display: inline-block;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-    .btn-read-more:hover { color: var(--accent-dusty); }
-
-    footer {
-      text-align: center;
-      margin-top: 4rem;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      font-family: var(--font-heading);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 
   <!-- Firebase Setup -->
   <script type="module">
@@ -223,14 +30,14 @@
     window.openModal = function() {
       const pin = prompt("Masukkan PIN Pemilik untuk menulis:");
       if (pin === SECRET_PIN) {
-        document.getElementById('entryModal').classList.add('active');
+        document.getElementById('entryModal').showModal();
       } else if (pin !== null) {
         alert("PIN salah. Akses ditolak.");
       }
     };
 
     window.closeModal = function() {
-      document.getElementById('entryModal').classList.remove('active');
+      document.getElementById('entryModal').close();
     };
 
     window.saveStory = async function() {
@@ -270,73 +77,76 @@
       }
     };
 
-    window.toggleReadMore = function(id) {
-      const body = document.getElementById(`body-${id}`);
-      const btn = document.getElementById(`btn-${id}`);
-      if (body.classList.contains('truncated')) {
-        body.classList.remove('truncated');
-        btn.innerText = "Tutup tulisan ↑";
-      } else {
-        body.classList.add('truncated');
-        btn.innerText = "Baca selengkapnya...";
+    const stories = new Map();
+    let loaded = false;
+    let homeScroll = 0;
+    const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    function showRoute() {
+      const reading = location.hash.startsWith('#cerita/');
+      document.getElementById('home').hidden = reading;
+      document.getElementById('reader').hidden = !reading;
+      if (!reading) {
+        document.title = 'Cerita Senja | Ruang Tenang';
+        if (location.hash === '#kumpulan') document.getElementById('kumpulan').scrollIntoView();
+        else window.scrollTo({top: homeScroll, behavior: 'instant'});
+        return;
       }
-    };
+      let id;
+      try { id = decodeURIComponent(location.hash.slice(8)); } catch { id = ''; }
+      const item = stories.get(id);
+      const reader = document.getElementById('reader');
+      reader.innerHTML = '<a class="back-link" href="#">&larr; Kembali ke cerita</a>';
+      if (!item) {
+        reader.innerHTML += '<h1 tabindex="-1">' + (loaded ? 'Cerita tidak ditemukan' : 'Memuat cerita...') + '</h1><p>Silakan kembali ke kumpulan cerita.</p>';
+      } else {
+        document.title = item.title + ' | Cerita Senja';
+        reader.innerHTML += `<div class="reader-meta">${escapeHTML(item.dateString)}</div><h1 tabindex="-1">${escapeHTML(item.title)}</h1><div class="full-story">${escapeHTML(item.content)}</div><div class="story-end">&mdash; Terima kasih sudah singgah &mdash;</div><a class="back-link" href="#">&larr; Kembali ke cerita</a>`;
+      }
+      window.scrollTo({top: 0, behavior: 'instant'});
+      reader.querySelector('h1').focus({preventScroll:true});
+    }
+    window.addEventListener('hashchange', showRoute);
+    document.getElementById('timeline').addEventListener('click', event => {
+      if (event.target.closest('a')) homeScroll = window.scrollY;
+    });
 
     async function loadStories() {
       const timeline = document.getElementById('timeline');
-      timeline.innerHTML = `<p style="text-align:center; color: var(--text-muted); padding: 40px;">Memuat tulisan dari senja...</p>`;
-
+      timeline.innerHTML = '<p class="status" role="status">Memuat tulisan dari senja...</p>';
       try {
-        const q = query(collection(db, "stories"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-
-        if (querySnapshot.empty) {
-          timeline.innerHTML = `
-            <div style="text-align:center; padding: 40px; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 16px;">
-              <p>Belum ada cerita yang tertuang di database.</p>
-              <p style="font-size: 0.9rem; margin-top: 6px;">Klik <strong>+ Tulis</strong> di pojok kanan bawah untuk mulai.</p>
-            </div>`;
-          return;
-        }
-
+        const snapshot = await getDocs(query(collection(db, 'stories'), orderBy('createdAt', 'desc')));
+        stories.clear();
         let html = '';
-        let index = 0;
-        querySnapshot.forEach((doc) => {
+        snapshot.forEach(doc => {
           const item = doc.data();
-          const isLong = (item.content || '').length > 180 || (item.content || '').includes('\n\n');
-          
-          html += `
-            <article class="entry-card">
-              <div class="entry-header">
-                <span class="mood-tag">${item.mood || '🌿 Reflektif'}</span>
-                <span class="entry-date">${item.dateString || ''}</span>
-              </div>
-              <h2 class="entry-title">${item.title}</h2>
-              <p class="entry-body ${isLong ? 'truncated' : ''}" id="body-${index}">${item.content}</p>
-              ${isLong ? `<button class="btn-read-more" id="btn-${index}" onclick="toggleReadMore(${index})">Baca selengkapnya...</button>` : ''}
-            </article>
-          `;
-          index++;
+          stories.set(doc.id, item);
+          const number = String(stories.size).padStart(2, '0');
+          html += `<article class="entry-card"><div class="entry-header"><span class="entry-number">${number}</span></div><h2 class="entry-title"><a href="#cerita/${encodeURIComponent(doc.id)}">${escapeHTML(item.title)}</a></h2><p class="entry-body truncated">${escapeHTML(item.content)}</p><div class="entry-bottom"><a class="btn-read-more" href="#cerita/${encodeURIComponent(doc.id)}">Baca selengkapnya <span aria-hidden="true">&nearr;</span></a><span class="entry-date">${escapeHTML((item.dateString || '').split(' pukul')[0])}</span></div></article>`;
         });
-        timeline.innerHTML = html;
+        loaded = true;
+        timeline.innerHTML = html || '<p class="status">Belum ada cerita. Setiap rasa punya awal.</p>';
+        document.getElementById('story-count').textContent = String(stories.size).padStart(2, '0') + ' tulisan tersimpan';
+        showRoute();
       } catch (err) {
-        timeline.innerHTML = `<p style="text-align:center; color: var(--text-muted);">Gagal memuat tulisan.</p>`;
+        timeline.innerHTML = '<p class="status" role="alert">Tulisan belum bisa dimuat. <button onclick="location.reload()">Coba lagi</button></p>';
+        if (location.hash.startsWith('#cerita/')) document.getElementById('reader').innerHTML = '<a href="#">&larr; Kembali ke cerita</a><p role="alert">Cerita belum bisa dimuat. <button onclick="location.reload()">Coba lagi</button></p>';
       }
     }
-
+    showRoute();
     window.onload = loadStories;
   </script>
 </head>
 <body>
 
-  <div class="modal" id="entryModal">
+  <dialog class="modal" id="entryModal" aria-labelledby="form-title">
     <div class="form-box">
       <div class="form-header">
-        <h2>Tuangkan Pikiran</h2>
-        <button class="btn-close" onclick="closeModal()">×</button>
+        <h2 id="form-title">Tuangkan Pikiran</h2>
+        <button aria-label="Tutup form" class="btn-close" onclick="closeModal()">×</button>
       </div>
       <div class="form-group">
-        <select id="mood">
+        <select id="mood" aria-label="Suasana hati">
           <option value="🌪️ Overthinking">🌪️ Overthinking</option>
           <option value="🌧️ Mendung/Reflektif">🌧️ Mendung/Reflektif</option>
           <option value="☕ Santai/Cozy">☕ Santai/Cozy</option>
@@ -345,28 +155,28 @@
         </select>
       </div>
       <div class="form-group">
-        <input type="text" id="title" placeholder="Judul ceritamu..." required />
+        <input type="text" id="title" aria-label="Judul cerita" placeholder="Judul ceritamu..." required />
       </div>
       <div class="form-group">
-        <textarea id="content" placeholder="Ceritain apa aja di sini..." required></textarea>
+        <textarea id="content" aria-label="Isi cerita" placeholder="Ceritain apa aja di sini..." required></textarea>
       </div>
       <button class="btn-submit" onclick="saveStory()">Simpan di Ruang Tenang</button>
     </div>
-  </div>
+  </dialog>
 
   <div class="container">
-    <header>
-      <h1>Cerita Senja</h1>
-      <p>Ruang tenang untuk menaruh segala isi kepala di penghujung hari.</p>
-    </header>
-
-    <button class="btn-float" onclick="openModal()">+ Tulis</button>
-    <div class="timeline" id="timeline"></div>
-
-    <footer>
-      © Cerita Senja — Ditulis apa adanya.
-    </footer>
+    <nav class="site-nav" aria-label="Navigasi utama"><a href="#" class="nav-note">RUANG UNTUK MERASA</a><a class="brand" href="#">cerita <em>senja.</em></a><button class="write-link" onclick="openModal()">+ Tulis cerita</button></nav>
+    <main>
+      <div id="home">
+        <header class="intro"><p class="eyebrow">CATATAN YANG TAK SEMPAT TERUCAP</p><h1>Beberapa rasa,<br>cukup <em>ditulis saja.</em></h1><p>Ruang tenang untuk menaruh segala isi kepala<br>di penghujung hari.</p><a class="explore" href="#kumpulan">Jelajahi cerita <span aria-hidden="true">&darr;</span></a></header>
+        <section id="kumpulan" aria-labelledby="collection-title"><div class="collection-heading"><h2 id="collection-title">Di antara jeda &amp; rasa</h2><span id="story-count">KUMPULAN CERITA</span></div><div class="timeline" id="timeline"><p class="status">Memuat tulisan dari senja...</p></div></section>
+      </div>
+      <article id="reader" class="reader" hidden></article>
+    </main>
+    <footer><a class="brand" href="#">cerita <em>senja.</em></a><p>Ditulis apa adanya. Dirasakan sepenuhnya.</p><small>&copy; Cerita Senja</small></footer>
   </div>
-
+  <aside class="sound-control" aria-label="Suasana suara"><button id="sound-toggle" aria-pressed="false">&#9835; Putar lo-fi</button><label for="volume" class="sr-only">Volume suasana</label><input id="volume" type="range" min="0" max="100" value="30" aria-label="Volume suasana"><span id="sound-status" class="sr-only" role="status"></span></aside>
+  <script src="ambience.js"></script>
 </body>
 </html>
+
