@@ -28,7 +28,7 @@ button { cursor:pointer; }
 .explore { display:inline-flex; align-items:center; gap:26px; font-size:10px; letter-spacing:1px; margin-top:14px; }
 .explore span { font-size:22px; }
 #kumpulan { position:relative; isolation:isolate; overflow:hidden; }
-.collection-sketch { position:absolute; z-index:2; left:50%; top:490px; width:480px; height:auto; transform:translate(-50%,-50%); pointer-events:none; opacity:.14; }
+.collection-sketch { position:absolute; z-index:2; left:50%; top:490px; width:550px; height:auto; transform:translate(-50%,-50%); pointer-events:none; opacity:.14; }
 .collection-heading,.timeline,.pagination { position:relative; z-index:1; }
 .collection-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:22px 0; border-top:1px solid var(--line); margin-bottom:24px; }
 .collection-heading h2 { font-size:19px; font-weight:normal; margin:0; }
