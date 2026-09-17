@@ -24,7 +24,6 @@ button { cursor:pointer; }
 .intro h1 { font-size:clamp(44px,5.5vw,76px); line-height:1.16; font-weight:normal; letter-spacing:-2px; margin:0 0 26px; }
 .intro h1 em { color:#c7a6a5; font-weight:normal; }
 .intro p { color:var(--muted); font-size:15px; }
-.photo-caption { font-size:12px !important; font-style:italic; margin-top:28px; }
 .explore { display:inline-flex; align-items:center; gap:26px; font-size:10px; letter-spacing:1px; margin-top:14px; }
 .explore span { font-size:22px; }
 .collection-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:22px 0; border-top:1px solid var(--line); margin-bottom:24px; }
