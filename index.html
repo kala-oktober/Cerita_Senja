@@ -40,6 +40,17 @@
       document.getElementById('entryModal').close();
     };
 
+    window.shareStory = async function() {
+      const button = document.querySelector('.btn-share');
+      try {
+        await navigator.clipboard.writeText(location.href);
+        button.textContent = 'Link tersalin';
+      } catch {
+        prompt('Salin link cerita ini:', location.href);
+      }
+      setTimeout(() => button.textContent = 'Bagikan cerita', 2000);
+    };
+
     window.saveStory = async function() {
       const mood = document.getElementById('mood').value;
       const title = document.getElementById('title').value.trim();
@@ -80,15 +91,45 @@
     const stories = new Map();
     let loaded = false;
     let homeScroll = 0;
+    let currentPage = 1;
+    const pageSize = 6;
+
+    function renderPage() {
+      const entries = [...stories];
+      const pages = Math.max(1, Math.ceil(entries.length / pageSize));
+      currentPage = Math.min(currentPage, pages);
+      const offset = (currentPage - 1) * pageSize;
+      document.getElementById('timeline').innerHTML = entries.slice(offset, offset + pageSize).map(([id, item], index) => `
+        <article class="entry-card"><div class="entry-header"><span class="entry-number">${String(offset + index + 1).padStart(2, '0')}</span></div>
+        <h2 class="entry-title"><a href="#cerita/${encodeURIComponent(id)}">${escapeHTML(item.title)}</a></h2>
+        <p class="entry-body truncated">${escapeHTML(item.content)}</p>
+        <div class="entry-bottom"><a class="btn-read-more" href="#cerita/${encodeURIComponent(id)}">Baca selengkapnya &nearr;</a><span class="entry-date">${escapeHTML((item.dateString || '').split(' pukul')[0])}</span></div></article>
+      `).join('') || '<p class="status">Belum ada cerita. Setiap rasa punya awal.</p>';
+      const pagination = document.getElementById('pagination');
+      pagination.hidden = pages <= 1;
+      pagination.innerHTML = `<button data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>&larr; Sebelumnya</button>` +
+        Array.from({length: pages}, (_, i) => `<button data-page="${i + 1}" aria-label="Halaman ${i + 1}" ${currentPage === i + 1 ? 'aria-current="page"' : ''}>${i + 1}</button>`).join('') +
+        `<button data-page="${currentPage + 1}" ${currentPage === pages ? 'disabled' : ''}>Berikutnya &rarr;</button>`;
+    }
+    document.getElementById('pagination').addEventListener('click', event => {
+      const button = event.target.closest('button[data-page]');
+      if (!button || button.disabled) return;
+      currentPage = Number(button.dataset.page);
+      renderPage();
+      document.getElementById('kumpulan').scrollIntoView({behavior:'instant'});
+      homeScroll = window.scrollY;
+      document.querySelector('#pagination [aria-current]').focus({preventScroll:true});
+    });
     const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
     function showRoute() {
+      const wasReading = !document.getElementById('reader').hidden;
       const reading = location.hash.startsWith('#cerita/');
       document.getElementById('home').hidden = reading;
       document.getElementById('reader').hidden = !reading;
       if (!reading) {
         document.title = 'Cerita Senja | Ruang Tenang';
-        if (location.hash === '#kumpulan') document.getElementById('kumpulan').scrollIntoView();
+        if (!wasReading && location.hash === '#kumpulan') document.getElementById('kumpulan').scrollIntoView();
         else window.scrollTo({top: homeScroll, behavior: 'instant'});
         return;
       }
@@ -101,7 +142,12 @@
         reader.innerHTML += '<h1 tabindex="-1">' + (loaded ? 'Cerita tidak ditemukan' : 'Memuat cerita...') + '</h1><p>Silakan kembali ke kumpulan cerita.</p>';
       } else {
         document.title = item.title + ' | Cerita Senja';
-        reader.innerHTML += `<div class="reader-meta">${escapeHTML(item.dateString)}</div><h1 tabindex="-1">${escapeHTML(item.title)}</h1><div class="full-story">${escapeHTML(item.content)}</div><div class="story-end">&mdash; Terima kasih sudah singgah &mdash;</div><a class="back-link" href="#">&larr; Kembali ke cerita</a>`;
+        const entries = [...stories];
+        const index = entries.findIndex(([key]) => key === id);
+        const adjacent = (entry, label) => entry ? `<a href="#cerita/${encodeURIComponent(entry[0])}"><span>${label}</span>${escapeHTML(entry[1].title)}</a>` : '<span></span>';
+        const navigation = `<nav class="story-navigation" aria-label="Navigasi cerita">${adjacent(entries[index - 1], '&larr; Cerita sebelumnya')}${adjacent(entries[index + 1], 'Cerita berikutnya &rarr;')}</nav>`;
+
+        reader.innerHTML += `<div class="reader-meta">${escapeHTML(item.dateString)}</div><h1 tabindex="-1">${escapeHTML(item.title)}</h1><div class="full-story">${escapeHTML(item.content)}</div><div class="story-end">&mdash; Terima kasih sudah singgah &mdash;</div><button class="btn-share" onclick="shareStory()">Bagikan cerita</button>${navigation}<a class="back-link" href="#">&larr; Kembali ke cerita</a>`;
       }
       window.scrollTo({top: 0, behavior: 'instant'});
       reader.querySelector('h1').focus({preventScroll:true});
@@ -117,15 +163,9 @@
       try {
         const snapshot = await getDocs(query(collection(db, 'stories'), orderBy('createdAt', 'desc')));
         stories.clear();
-        let html = '';
-        snapshot.forEach(doc => {
-          const item = doc.data();
-          stories.set(doc.id, item);
-          const number = String(stories.size).padStart(2, '0');
-          html += `<article class="entry-card"><div class="entry-header"><span class="entry-number">${number}</span></div><h2 class="entry-title"><a href="#cerita/${encodeURIComponent(doc.id)}">${escapeHTML(item.title)}</a></h2><p class="entry-body truncated">${escapeHTML(item.content)}</p><div class="entry-bottom"><a class="btn-read-more" href="#cerita/${encodeURIComponent(doc.id)}">Baca selengkapnya <span aria-hidden="true">&nearr;</span></a><span class="entry-date">${escapeHTML((item.dateString || '').split(' pukul')[0])}</span></div></article>`;
-        });
+        snapshot.forEach(doc => stories.set(doc.id, doc.data()));
         loaded = true;
-        timeline.innerHTML = html || '<p class="status">Belum ada cerita. Setiap rasa punya awal.</p>';
+        renderPage();
         document.getElementById('story-count').textContent = String(stories.size).padStart(2, '0') + ' tulisan tersimpan';
         showRoute();
       } catch (err) {
@@ -168,8 +208,8 @@
     <nav class="site-nav" aria-label="Navigasi utama"><a href="#" class="nav-note">RUANG UNTUK MERASA</a><a class="brand" href="#">cerita <em>senja.</em></a><button class="write-link" onclick="openModal()">+ Tulis cerita</button></nav>
     <main>
       <div id="home">
-        <header class="intro"><p class="eyebrow">CATATAN YANG TAK SEMPAT TERUCAP</p><h1>Beberapa rasa,<br>cukup <em>ditulis saja.</em></h1><p>Ruang tenang untuk menaruh segala isi kepala<br>di penghujung hari.</p><a class="explore" href="#kumpulan">Jelajahi cerita <span aria-hidden="true">&darr;</span></a></header>
-        <section id="kumpulan" aria-labelledby="collection-title"><div class="collection-heading"><h2 id="collection-title">Di antara jeda &amp; rasa</h2><span id="story-count">KUMPULAN CERITA</span></div><div class="timeline" id="timeline"><p class="status">Memuat tulisan dari senja...</p></div></section>
+        <header class="intro"><p class="eyebrow">CATATAN YANG TAK SEMPAT TERUCAP</p><h1>Beberapa rasa,<br>cukup <em>ditulis saja.</em></h1><p>Ruang tenang untuk menaruh segala isi kepala<br>di penghujung hari.</p><p class="photo-caption">Dari sela meja ini, banyak rasa menemukan kata.</p><a class="explore" href="#kumpulan">Jelajahi cerita <span aria-hidden="true">&darr;</span></a></header>
+        <section id="kumpulan" aria-labelledby="collection-title"><div class="collection-heading"><h2 id="collection-title">Di antara jeda &amp; rasa</h2><span id="story-count">KUMPULAN CERITA</span></div><div class="timeline" id="timeline"><p class="status">Memuat tulisan dari senja...</p></div><nav id="pagination" class="pagination" aria-label="Halaman kumpulan cerita" hidden></nav></section>
       </div>
       <article id="reader" class="reader" hidden></article>
     </main>
