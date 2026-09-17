@@ -48,7 +48,7 @@ button { cursor:pointer; }
 .entry-date { font-size:9px; color:var(--muted); }
 .status { grid-column:1 / -1; text-align:center; padding:40px; }
 .reader { position:relative; isolation:isolate; max-width:740px; margin:60px auto 0; padding:45px 55px; background:#292c36f5; overflow:hidden; overflow-wrap:anywhere; }
-.reader::before { content:""; position:absolute; z-index:0; right:-58px; top:24%; width:430px; height:450px; pointer-events:none; opacity:.16; mix-blend-mode:multiply; background:url('assets/story-sketch.png') right bottom / contain no-repeat; }
+.reader::before { content:""; position:fixed; z-index:0; left:50%; top:50%; width:390px; height:430px; transform:translate(-50%,-50%); pointer-events:none; opacity:.16; mix-blend-mode:multiply; background:url('assets/story-sketch.png') right bottom / contain no-repeat; }
 .reader > * { position:relative; z-index:1; }
 .back-link { font-size:12px; display:inline-block; padding:8px 0; }
 .pagination { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:38px 0; }
@@ -88,7 +88,7 @@ textarea { min-height:180px; resize:vertical; }
   .intro::before { inset:-90px -6.82% 0; background-position:72% center; }
   .collection-heading { margin-bottom:25px; }.collection-heading h2 { font-size:16px; }.collection-heading span { font-size:8px; letter-spacing:0; }
   .timeline { display:flex; flex-direction:column; gap:22px; }.entry-card,.entry-card:nth-child(n) { width:100%; padding:28px; min-height:0; margin:0; }.entry-title { font-size:30px; }
-  .reader { margin-top:25px; padding:28px 22px; }.reader::before { right:-42px; top:34%; width:250px; height:290px; }.reader-meta { margin-top:38px; }.full-story { font-size:17px; }
+  .reader { margin-top:25px; padding:28px 22px; }.reader::before { left:50%; top:50%; width:220px; height:260px; transform:translate(-50%,-50%); }.reader-meta { margin-top:38px; }.full-story { font-size:17px; }
   .sound-control { bottom:14px; left:16px; } footer { margin-top:55px; padding-top:65px; }
 }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.entry-card { transition:none; }.entry-card:hover { transform:none; } }
