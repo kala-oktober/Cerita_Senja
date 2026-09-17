@@ -48,8 +48,8 @@ button { cursor:pointer; }
 .entry-date { font-size:9px; color:var(--muted); }
 .status { grid-column:1 / -1; text-align:center; padding:40px; }
 .reader { position:relative; isolation:isolate; max-width:740px; margin:60px auto 0; padding:45px 55px; background:#292c36f5; overflow:hidden; overflow-wrap:anywhere; }
-.reader::before { content:""; position:absolute; z-index:2; left:50%; top:50%; width:360px; height:400px; transform:translate(-50%,-50%); pointer-events:none; opacity:.7; mix-blend-mode:screen; filter:invert(1); background:url('assets/story-sketch.png') center / contain no-repeat; }
 .reader > * { position:relative; z-index:3; }
+.reader-sketch { position:absolute !important; z-index:2 !important; left:50%; top:50%; width:360px; height:auto; transform:translate(-50%,-50%); pointer-events:none; opacity:.85; mix-blend-mode:darken; filter:contrast(2); }
 .back-link { font-size:12px; display:inline-block; padding:8px 0; }
 .pagination { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:38px 0; }
 .pagination button { min-width:42px; min-height:44px; padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); font:12px Arial,sans-serif; }
@@ -88,7 +88,7 @@ textarea { min-height:180px; resize:vertical; }
   .intro::before { inset:-90px -6.82% 0; background-position:72% center; }
   .collection-heading { margin-bottom:25px; }.collection-heading h2 { font-size:16px; }.collection-heading span { font-size:8px; letter-spacing:0; }
   .timeline { display:flex; flex-direction:column; gap:22px; }.entry-card,.entry-card:nth-child(n) { width:100%; padding:28px; min-height:0; margin:0; }.entry-title { font-size:30px; }
-  .reader { margin-top:25px; padding:28px 22px; }.reader::before { left:50%; top:50%; width:210px; height:250px; transform:translate(-50%,-50%); }.reader-meta { margin-top:38px; }.full-story { font-size:17px; }
+  .reader { margin-top:25px; padding:28px 22px; }.reader-sketch { width:210px; }.reader-meta { margin-top:38px; }.full-story { font-size:17px; }
   .sound-control { bottom:14px; left:16px; } footer { margin-top:55px; padding-top:65px; }
 }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.entry-card { transition:none; }.entry-card:hover { transform:none; } }
