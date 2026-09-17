@@ -10,14 +10,14 @@ button { cursor:pointer; }
 :focus-visible { outline:2px solid #c7a6a5; outline-offset:5px; }
 [hidden] { display:none !important; }
 .container { max-width:1440px; margin:auto; padding:0 7%; }
-.site-nav { display:flex; align-items:center; justify-content:space-between; min-height:90px; gap:24px; border-bottom:1px solid var(--line); }
+.site-nav { position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; min-height:90px; gap:24px; border-bottom:0; }
 .nav-note,.write-link,.eyebrow,.explore,.collection-heading span,.entry-date,.entry-number,.btn-read-more,.back-link,.reader-meta,.sound-control,footer small { font-family:Arial,sans-serif; }
 .nav-note,.write-link { font-size:10px; letter-spacing:2px; }
 .brand { font-size:25px; letter-spacing:2px; white-space:nowrap; }
 .brand em { font-weight:normal; }
 .write-link { border:0; background:transparent; color:inherit; padding:12px 0; }
 .intro { position:relative; isolation:isolate; text-align:center; padding:55px 0 50px; }
-.intro::before { content:""; position:absolute; inset:0 -8.14%; z-index:-1; pointer-events:none; background:linear-gradient(180deg,#25263066,#25263080 75%,#30303c),url('assets/sela-meja.png') 65% 48% / cover no-repeat; }
+.intro::before { content:""; position:absolute; inset:-90px -8.14% 0; z-index:-1; pointer-events:none; background:linear-gradient(180deg,#252630c9 0%,#25263080 30%,#25263080 75%,#30303c),url('assets/sela-meja.png') 65% 48% / cover no-repeat; }
 .intro h1 { text-shadow:0 2px 20px #11121b66; }
 .intro .eyebrow,.intro > p { color:#d2c8cd; }
 .intro .eyebrow { font-size:10px; letter-spacing:3px; font-style:normal; margin:0 0 18px; }
@@ -72,7 +72,7 @@ textarea { min-height:180px; resize:vertical; }
 @media(max-width:700px) {
   .container { padding:0 6%; }.site-nav { min-height:90px; }.nav-note { display:none; }.brand { font-size:23px; }.write-link { letter-spacing:1px; }
   .intro { padding:40px 0; }.intro .eyebrow { font-size:8px; letter-spacing:2px; }.intro h1 { letter-spacing:-1px; }.intro p { font-size:14px; }
-  .intro::before { inset:0 -6.82%; background-position:72% center; }
+  .intro::before { inset:-90px -6.82% 0; background-position:72% center; }
   .collection-heading { margin-bottom:25px; }.collection-heading h2 { font-size:16px; }.collection-heading span { font-size:8px; letter-spacing:0; }
   .timeline { display:flex; flex-direction:column; gap:22px; }.entry-card,.entry-card:nth-child(n) { width:100%; padding:28px; min-height:0; margin:0; }.entry-title { font-size:30px; }
   .reader { margin-top:25px; padding:28px 22px; }.reader-meta { margin-top:38px; }.full-story { font-size:17px; }
