@@ -49,7 +49,7 @@ button { cursor:pointer; }
 .status { grid-column:1 / -1; text-align:center; padding:40px; }
 .reader { position:relative; isolation:isolate; max-width:740px; margin:60px auto 0; padding:45px 55px; background:#292c36f5; overflow:hidden; overflow-wrap:anywhere; }
 .reader > * { position:relative; z-index:3; }
-.reader-sketch { position:absolute !important; z-index:2 !important; left:50%; top:50%; width:440px; height:auto; transform:translate(-50%,-50%); pointer-events:none; opacity:.42; mix-blend-mode:normal; filter:contrast(1.35); }
+.reader-sketch { position:absolute !important; z-index:2 !important; left:50%; top:50%; width:440px; height:auto; transform:translate(-50%,-50%); pointer-events:none; opacity:.38; mix-blend-mode:normal; filter:contrast(1.35); }
 .back-link { font-size:12px; display:inline-block; padding:8px 0; }
 .pagination { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:38px 0; }
 .pagination button { min-width:42px; min-height:44px; padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); font:12px Arial,sans-serif; }
