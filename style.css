@@ -27,6 +27,9 @@ button { cursor:pointer; }
 .intro p { color:var(--muted); font-size:15px; }
 .explore { display:inline-flex; align-items:center; gap:26px; font-size:10px; letter-spacing:1px; margin-top:14px; }
 .explore span { font-size:22px; }
+#kumpulan { position:relative; isolation:isolate; overflow:hidden; }
+.collection-sketch { position:absolute; z-index:0; left:50%; top:48%; width:300px; height:auto; transform:translate(-50%,-50%); pointer-events:none; opacity:.20; }
+.collection-heading,.timeline,.pagination { position:relative; z-index:1; }
 .collection-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:22px 0; border-top:1px solid var(--line); margin-bottom:24px; }
 .collection-heading h2 { font-size:19px; font-weight:normal; margin:0; }
 .collection-heading span { font-size:9px; letter-spacing:1.6px; color:var(--muted); }
@@ -86,7 +89,7 @@ textarea { min-height:180px; resize:vertical; }
   .container { padding:0 6%; }.site-nav { min-height:90px; }.nav-note { display:none; }.brand { font-size:23px; }.write-link { letter-spacing:1px; }
   .intro { padding:40px 0; }.intro .eyebrow { font-size:8px; letter-spacing:2px; }.intro h1 { letter-spacing:-1px; }.intro p { font-size:14px; }
   .intro::before { inset:-90px -6.82% 0; background-position:72% center; }
-  .collection-heading { margin-bottom:25px; }.collection-heading h2 { font-size:16px; }.collection-heading span { font-size:8px; letter-spacing:0; }
+  .collection-sketch { width:210px; opacity:.17; }\n  .collection-heading { margin-bottom:25px; }.collection-heading h2 { font-size:16px; }.collection-heading span { font-size:8px; letter-spacing:0; }
   .timeline { display:flex; flex-direction:column; gap:22px; }.entry-card,.entry-card:nth-child(n) { width:100%; padding:28px; min-height:0; margin:0; }.entry-title { font-size:30px; }
   .reader { margin-top:25px; padding:28px 22px; }.reader-sketch { width:260px; opacity:.36; }.reader-meta { margin-top:38px; }.full-story { font-size:17px; }
   .sound-control { bottom:14px; left:16px; } footer { margin-top:55px; padding-top:65px; }
