@@ -137,7 +137,7 @@
       try { id = decodeURIComponent(location.hash.slice(8)); } catch { id = ''; }
       const item = stories.get(id);
       const reader = document.getElementById('reader');
-      reader.innerHTML = '<img class="reader-sketch" src="assets/story-sketch.png" alt="" aria-hidden="true"><a class="back-link" href="#">&larr; Kembali ke cerita</a>';
+      reader.innerHTML = '<img class="reader-sketch" src="assets/story-sketch-transparent.png" alt="" aria-hidden="true"><a class="back-link" href="#">&larr; Kembali ke cerita</a>';
       if (!item) {
         reader.innerHTML += '<h1 tabindex="-1">' + (loaded ? 'Cerita tidak ditemukan' : 'Memuat cerita...') + '</h1><p>Silakan kembali ke kumpulan cerita.</p>';
       } else {
