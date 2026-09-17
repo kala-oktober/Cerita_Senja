@@ -58,8 +58,8 @@ button { cursor:pointer; }
 .story-navigation a:last-child { text-align:right; }
 .story-navigation span { display:block; font:11px Arial,sans-serif; color:var(--muted); margin-bottom:12px; }
 .reader-meta { font-size:11px; color:var(--muted); margin-top:65px; }
-.reader h1 { font-size:clamp(32px,4vw,52px); font-weight:normal; line-height:1.25; margin:20px 0 45px; }
-.full-story { white-space:pre-wrap; font-size:18px; line-height:2; }
+.reader h1 { font-size:clamp(30px,3.4vw,46px); font-weight:normal; line-height:1.25; margin:18px 0 36px; }
+.full-story { white-space:pre-wrap; font-size:17px; line-height:1.9; }
 .story-end { text-align:center; color:var(--muted); font-style:italic; font-size:13px; margin:65px 0; }
 .btn-share { display:block; margin:-35px auto 40px; padding:10px 16px; border:1px solid var(--line); background:transparent; color:var(--ink); font:11px Arial,sans-serif; }
 .btn-share:hover { border-color:#c7a6a5; color:#c7a6a5; }
