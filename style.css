@@ -24,6 +24,7 @@ button { cursor:pointer; }
 .intro h1 { font-size:clamp(44px,5.5vw,76px); line-height:1.16; font-weight:normal; letter-spacing:-2px; margin:0 0 26px; }
 .intro h1 em { color:#c7a6a5; font-weight:normal; }
 .intro p { color:var(--muted); font-size:15px; }
+.photo-caption { font-size:12px !important; font-style:italic; margin-top:28px; }
 .explore { display:inline-flex; align-items:center; gap:26px; font-size:10px; letter-spacing:1px; margin-top:14px; }
 .explore span { font-size:22px; }
 .collection-heading { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:22px 0; border-top:1px solid var(--line); margin-bottom:24px; }
@@ -48,10 +49,20 @@ button { cursor:pointer; }
 .status { grid-column:1 / -1; text-align:center; padding:40px; }
 .reader { max-width:740px; margin:60px auto 0; padding:45px 55px; background:#292c36f5; overflow-wrap:anywhere; }
 .back-link { font-size:12px; display:inline-block; padding:8px 0; }
+.pagination { display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin:38px 0; }
+.pagination button { min-width:42px; min-height:44px; padding:8px 12px; border:1px solid var(--line); background:transparent; color:var(--ink); font:12px Arial,sans-serif; }
+.pagination button[aria-current] { background:#c7a6a5; color:#252630; }
+.pagination button:disabled { opacity:.35; cursor:default; }
+.story-navigation { display:grid; grid-template-columns:1fr 1fr; gap:24px; border-top:1px solid var(--line); padding:24px 0; margin-bottom:20px; }
+.story-navigation a { overflow-wrap:anywhere; line-height:1.5; }
+.story-navigation a:last-child { text-align:right; }
+.story-navigation span { display:block; font:11px Arial,sans-serif; color:var(--muted); margin-bottom:12px; }
 .reader-meta { font-size:11px; color:var(--muted); margin-top:65px; }
 .reader h1 { font-size:clamp(32px,4vw,52px); font-weight:normal; line-height:1.25; margin:20px 0 45px; }
 .full-story { white-space:pre-wrap; font-size:18px; line-height:2; }
 .story-end { text-align:center; color:var(--muted); font-style:italic; font-size:13px; margin:65px 0; }
+.btn-share { display:block; margin:-35px auto 40px; padding:10px 16px; border:1px solid var(--line); background:transparent; color:var(--ink); font:11px Arial,sans-serif; }
+.btn-share:hover { border-color:#c7a6a5; color:#c7a6a5; }
 footer { text-align:center; padding:60px 0 95px; margin-top:45px; border-top:1px solid var(--line); }
 footer p { font-size:13px; color:var(--muted); }
 footer small { font-size:9px; letter-spacing:2px; }
