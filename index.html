@@ -9,7 +9,8 @@
   <!-- Firebase Setup -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } 
+    import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, getDocs, query, orderBy, serverTimestamp, updateDoc } 
       from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -24,20 +25,69 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
 
-    const SECRET_PIN = "281009";
+    let editingStoryId = null;
+
+    function openStoryForm() {
+      editingStoryId = null;
+      document.getElementById('form-title').textContent = 'Tuangkan Pikiran';
+      document.querySelector('.btn-submit').textContent = 'Simpan di Ruang Tenang';
+      document.getElementById('title').value = '';
+      document.getElementById('content').value = '';
+      document.getElementById('entryModal').showModal();
+    }
 
     window.openModal = function() {
-      const pin = prompt("Masukkan PIN Pemilik untuk menulis:");
-      if (pin === SECRET_PIN) {
-        document.getElementById('entryModal').showModal();
-      } else if (pin !== null) {
-        alert("PIN salah. Akses ditolak.");
+      if (!auth.currentUser) {
+        document.getElementById('loginModal').showModal();
+        return;
+      }
+      openStoryForm();
+    };
+
+    window.loginOwner = async function() {
+      const button = document.querySelector('.btn-login');
+      button.disabled = true;
+      try {
+        await signInWithPopup(auth, googleProvider);
+        document.getElementById('loginModal').close();
+        openStoryForm();
+      } catch (err) {
+        alert('Gagal masuk: ' + err.message);
+      } finally {
+        button.disabled = false;
       }
     };
 
+    window.ownerSignOut = async function() {
+      document.getElementById('entryModal').close();
+      await signOut(auth);
+    };
+
+    onAuthStateChanged(auth, user => {
+      document.querySelector('.write-link').textContent = '+ Tulis cerita';
+      document.querySelector('.write-link').onclick = openModal;
+      document.querySelectorAll('.btn-edit').forEach(button => button.hidden = !user);
+      document.querySelector('.btn-logout').hidden = !user;
+    });
+
     window.closeModal = function() {
       document.getElementById('entryModal').close();
+    };
+
+    window.editStory = function(id) {
+      if (!auth.currentUser) return;
+      const item = stories.get(id);
+      if (!item) return;
+      editingStoryId = id;
+      document.getElementById('form-title').textContent = 'Edit Cerita';
+      document.querySelector('.btn-submit').textContent = 'Simpan Perubahan';
+      document.getElementById('mood').value = item.mood || 'ðŸŒªï¸ Overthinking';
+      document.getElementById('title').value = item.title;
+      document.getElementById('content').value = item.content;
+      document.getElementById('entryModal').showModal();
     };
 
     window.shareStory = async function() {
@@ -62,28 +112,38 @@
       }
 
       const btn = document.querySelector('.btn-submit');
+      const storyId = editingStoryId;
       btn.innerText = "Menyimpan...";
       btn.disabled = true;
 
       try {
-        await addDoc(collection(db, "stories"), {
+        const story = {
           mood: mood,
           title: title,
-          content: content,
-          createdAt: serverTimestamp(),
-          dateString: new Date().toLocaleDateString('id-ID', {
+          content: content
+        };
+        if (storyId) {
+          await updateDoc(doc(db, 'stories', storyId), story);
+        } else {
+          await addDoc(collection(db, "stories"), {
+            ...story,
+            createdAt: serverTimestamp(),
+            dateString: new Date().toLocaleDateString('id-ID', {
             day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
-          })
-        });
+            })
+          });
+        }
 
+        editingStoryId = null;
         document.getElementById('title').value = '';
         document.getElementById('content').value = '';
         closeModal();
-        loadStories();
+        await loadStories();
+        if (storyId) showRoute();
       } catch (err) {
         alert("Gagal simpan: " + err.message);
       } finally {
-        btn.innerText = "Simpan di Ruang Tenang";
+        btn.innerText = storyId ? "Simpan Perubahan" : "Simpan di Ruang Tenang";
         btn.disabled = false;
       }
     };
@@ -147,7 +207,7 @@
         const adjacent = (entry, label) => entry ? `<a href="#cerita/${encodeURIComponent(entry[0])}"><span>${label}</span>${escapeHTML(entry[1].title)}</a>` : '<span></span>';
         const navigation = `<nav class="story-navigation" aria-label="Navigasi cerita">${adjacent(entries[index - 1], '&larr; Cerita sebelumnya')}${adjacent(entries[index + 1], 'Cerita berikutnya &rarr;')}</nav>`;
 
-        reader.innerHTML += `<div class="reader-meta">${escapeHTML(item.dateString)}</div><h1 tabindex="-1">${escapeHTML(item.title)}</h1><div class="full-story">${escapeHTML(item.content)}</div><div class="story-end">&mdash; Terima kasih sudah singgah &mdash;</div><button class="btn-share" onclick="shareStory()">Bagikan cerita</button>${navigation}<a class="back-link" href="#">&larr; Kembali ke cerita</a>`;
+        reader.innerHTML += `<div class="reader-meta">${escapeHTML(item.dateString)}</div><h1 tabindex="-1">${escapeHTML(item.title)}</h1><div class="full-story">${escapeHTML(item.content)}</div><div class="story-end">&mdash; Terima kasih sudah singgah &mdash;</div><button class="btn-share btn-edit" ${auth.currentUser ? '' : 'hidden'} onclick="editStory('${escapeHTML(id)}')">Edit cerita</button><button class="btn-share" onclick="shareStory()">Bagikan cerita</button>${navigation}<a class="back-link" href="#">&larr; Kembali ke cerita</a>`;
       }
       window.scrollTo({top: 0, behavior: 'instant'});
       reader.querySelector('h1').focus({preventScroll:true});
@@ -179,6 +239,16 @@
 </head>
 <body>
 
+  <dialog class="modal" id="loginModal" aria-labelledby="login-title">
+    <div class="form-box">
+      <div class="form-header">
+        <h2 id="login-title">Masuk sebagai pemilik</h2>
+        <button aria-label="Tutup login" class="btn-close" onclick="document.getElementById('loginModal').close()">×</button>
+      </div>
+      <button class="btn-submit btn-login" onclick="loginOwner()">Masuk dengan Google</button>
+    </div>
+  </dialog>
+
   <dialog class="modal" id="entryModal" aria-labelledby="form-title">
     <div class="form-box">
       <div class="form-header">
@@ -201,6 +271,7 @@
         <textarea id="content" aria-label="Isi cerita" placeholder="Ceritain apa aja di sini..." required></textarea>
       </div>
       <button class="btn-submit" onclick="saveStory()">Simpan di Ruang Tenang</button>
+      <button class="btn-logout" onclick="ownerSignOut()" hidden>Keluar dari akun pemilik</button>
     </div>
   </dialog>
 
